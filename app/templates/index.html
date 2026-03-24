@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ project_name }}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="badge">Henan Agricultural University · Graduation Design</p>
+        <h1>{{ project_name }}</h1>
+        <p class="hero-text">
+          面向道路交通场景的七类目标智能识别系统，融合深度学习目标识别、历史记录留存、可视化结果展示与后台统计管理，适用于本科毕业设计展示与答辩演示。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#upload-panel">立即体验</a>
+          <a class="btn btn-secondary" href="/admin" target="_blank">后台面板</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h3>系统能力</h3>
+        <ul>
+          <li>图片上传与道路目标智能识别</li>
+          <li>七类场景标签统一输出</li>
+          <li>检测框可视化与结果追溯</li>
+          <li>历史样本记录与统计分析</li>
+          <li>FastAPI + ONNX Runtime 部署友好</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <section id="upload-panel" class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="section-tag">核心功能</p>
+          <h2>图片分类体验台</h2>
+        </div>
+        <div id="health-pill" class="status-pill">正在检查服务状态…</div>
+      </div>
+      <form id="upload-form" class="upload-form">
+        <label class="upload-box">
+          <input id="image-file" type="file" name="file" accept="image/*" required />
+          <span>点击选择图片，支持 JPG / PNG / WEBP</span>
+          <small>建议上传交通场景图片，如行人、自行车、汽车、公交车、卡车、交通标志等。</small>
+        </label>
+        <button class="btn btn-primary" type="submit">开始识别</button>
+      </form>
+      <div id="result-panel" class="result-grid hidden">
+        <div class="result-card">
+          <h3>原始图片</h3>
+          <img id="preview-image" alt="原图预览" />
+        </div>
+        <div class="result-card">
+          <h3>识别结果</h3>
+          <div class="result-main">
+            <div>
+              <span class="muted">主要类别</span>
+              <p id="main-label" class="main-label">-</p>
+            </div>
+            <div>
+              <span class="muted">置信度</span>
+              <p id="main-score" class="main-score">-</p>
+            </div>
+          </div>
+          <p id="model-mode" class="model-mode"></p>
+          <div id="annotated-wrapper" class="annotated-wrapper hidden">
+            <h4>可视化标注</h4>
+            <img id="annotated-image" alt="标注结果" />
+          </div>
+          <div>
+            <h4>目标明细</h4>
+            <div id="detections" class="detection-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="section-tag">识别类别</p>
+          <h2>系统支持的七类目标</h2>
+        </div>
+      </div>
+      <div class="class-grid">
+        {% for key, meta in class_meta.items() if key != 'unknown' %}
+        <article class="class-item">
+          <span class="dot" style="background: {{ meta.color }}"></span>
+          <div>
+            <h3>{{ meta.label }}</h3>
+            <p>{{ meta.display }}</p>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="section-tag">过程留痕</p>
+          <h2>最近识别记录</h2>
+        </div>
+        <button class="btn btn-secondary" id="refresh-history" type="button">刷新记录</button>
+      </div>
+      <div id="history-list" class="history-grid"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
