@@ -22,17 +22,31 @@ function modeLabel(mode) {
   return mapping[mode] || mode || '-';
 }
 
+function formatTime(isoString) {
+  if (!isoString) return '-';
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return isoString;
+  return date.toLocaleString('zh-CN', { hour12: false });
+}
+
+function setHealthUI(ok, timeText, labelText) {
+  healthPill.classList.remove('status-ok', 'status-bad');
+  healthPill.classList.add(ok ? 'status-ok' : 'status-bad');
+  healthPill.innerHTML = `
+    <span class="health-dot"></span>
+    <span class="health-text">${labelText}</span>
+    <span class="health-time">${timeText}</span>
+  `;
+}
+
 async function checkHealth() {
   try {
     const res = await fetch('/api/health');
     const data = await res.json();
-    healthPill.textContent = data.status === 'ok' ? '系统运行正常' : '系统状态异常';
-    healthPill.style.background = data.status === 'ok' ? '#dcfce7' : '#fee2e2';
-    healthPill.style.color = data.status === 'ok' ? '#166534' : '#991b1b';
+    const ok = data.status === 'ok';
+    setHealthUI(ok, `更新于 ${formatTime(data.timestamp)}`, ok ? '系统运行正常' : '系统状态异常');
   } catch (err) {
-    healthPill.textContent = '服务不可达';
-    healthPill.style.background = '#fee2e2';
-    healthPill.style.color = '#991b1b';
+    setHealthUI(false, '健康检查未通过', '系统暂不可达');
   }
 }
 
@@ -40,17 +54,17 @@ function renderTip(data) {
   resultTip.classList.remove('hidden');
   if (data.predicted_class === 'unknown') {
     resultTip.className = 'tip-box warning-box';
-    resultTip.textContent = '当前图片未稳定映射到七类道路目标。答辩时建议优先使用首页推荐样例或典型交通场景图片。';
+    resultTip.textContent = '当前图片未能稳定映射到预设的七类道路目标，建议更换典型道路交通场景图片后重新测试。';
     return;
   }
   resultTip.className = 'tip-box success-box';
-  resultTip.textContent = `本次识别已成功映射到道路目标类别：${data.predicted_label}。`;
+  resultTip.textContent = `本次识别结果已成功映射到道路目标类别：${data.predicted_label}。`;
 }
 
 function renderDetections(items = []) {
   detectionsEl.innerHTML = '';
   if (!items.length) {
-    detectionsEl.innerHTML = '<div class="detection-item">未获取到可用候选标签。</div>';
+    detectionsEl.innerHTML = '<div class="detection-item">当前未获取到可用候选结果。</div>';
     return;
   }
   items.forEach((item, index) => {
@@ -67,7 +81,7 @@ function renderDetections(items = []) {
 function renderHistory(items = []) {
   historyList.innerHTML = '';
   if (!items.length) {
-    historyList.innerHTML = '<div class="history-item">暂无历史记录。</div>';
+    historyList.innerHTML = '<div class="history-item">当前暂无识别记录。</div>';
     return;
   }
   items.forEach(item => {
@@ -92,14 +106,14 @@ async function loadHistory() {
     const data = await res.json();
     renderHistory(data.items || []);
   } catch (err) {
-    historyList.innerHTML = '<div class="history-item">读取历史记录失败。</div>';
+    historyList.innerHTML = '<div class="history-item">识别记录读取失败，请稍后重试。</div>';
   }
 }
 
 uploadForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   if (!fileInput.files || !fileInput.files[0]) {
-    alert('请先选择图片');
+    alert('请先选择待识别图片');
     return;
   }
 
@@ -110,7 +124,7 @@ uploadForm.addEventListener('submit', async (event) => {
 
   const submitBtn = uploadForm.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  submitBtn.textContent = '识别中…';
+  submitBtn.textContent = '识别处理中…';
 
   try {
     const res = await fetch('/api/classify', { method: 'POST', body: formData });
@@ -141,4 +155,3 @@ uploadForm.addEventListener('submit', async (event) => {
 refreshHistoryBtn.addEventListener('click', loadHistory);
 checkHealth();
 loadHistory();
-);
