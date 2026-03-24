@@ -26,7 +26,7 @@ async function checkHealth() {
   try {
     const res = await fetch('/api/health');
     const data = await res.json();
-    healthPill.textContent = data.status === 'ok' ? '服务运行正常' : '服务状态异常';
+    healthPill.textContent = data.status === 'ok' ? '系统运行正常' : '系统状态异常';
     healthPill.style.background = data.status === 'ok' ? '#dcfce7' : '#fee2e2';
     healthPill.style.color = data.status === 'ok' ? '#166534' : '#991b1b';
   } catch (err) {
@@ -134,10 +134,11 @@ uploadForm.addEventListener('submit', async (event) => {
     alert(err.message || '识别失败，请稍后重试');
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = '开始识别';
+    submitBtn.textContent = '提交图片并开始识别';
   }
 });
 
 refreshHistoryBtn.addEventListener('click', loadHistory);
 checkHealth();
 loadHistory();
+);
