@@ -35,6 +35,8 @@ img { max-width: 100%; display: block; }
 .btn:hover { transform: translateY(-1px); }
 .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; }
 .btn-secondary { background: #e2e8f0; color: #0f172a; }
+.btn-danger { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; }
+.btn-block { width: 100%; }
 .upload-form { display: grid; gap: 16px; }
 .upload-box { border: 2px dashed #bfdbfe; background: #eff6ff; border-radius: 18px; padding: 26px; display: grid; gap: 8px; cursor: pointer; }
 .upload-box input { display: none; }
@@ -63,6 +65,8 @@ img { max-width: 100%; display: block; }
 .history-item h3 { margin: 0 0 8px; font-size: 16px; }
 .history-item p { margin: 6px 0; color: #475569; }
 .history-thumb { border-radius: 12px; aspect-ratio: 4 / 3; object-fit: cover; width: 100%; border: 1px solid #e2e8f0; margin-bottom: 10px; }
+.history-actions { margin-top: 12px; display: flex; gap: 10px; }
+.admin-hint { margin-top: 14px; }
 .hidden { display: none !important; }
 .admin-auth input { width: 100%; border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; font-size: 15px; }
 .stat-card h3 { margin: 0 0 8px; font-size: 15px; color: #475569; }

@@ -26,6 +26,23 @@ function renderStats(stats = {}) {
   `;
 }
 
+async function deleteRecord(recordId, filename) {
+  const confirmed = window.confirm(`【删除动作】确定删除记录 #${recordId}（${filename}）吗？\n这会同时删除数据库记录及对应图片文件。`);
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`/api/admin/predictions/${recordId}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.detail || '删除失败');
+    await loadAdmin();
+  } catch (err) {
+    alert(err.message || '删除失败，请稍后重试');
+  }
+}
+
 function renderRecent(items = []) {
   recentEl.innerHTML = '';
   if (!items.length) {
@@ -39,11 +56,17 @@ function renderRecent(items = []) {
     el.innerHTML = `
       <img class="history-thumb" src="${img}" alt="${item.filename}" />
       <h3>${item.predicted_label}</h3>
+      <p>ID：${item.id}</p>
       <p>文件：${item.filename}</p>
       <p>置信度：${Number(item.confidence || 0).toFixed(3)}</p>
       <p>模型：${modeLabel(item.model_mode)}</p>
       <p>时间：${item.created_at}</p>
+      <div class="history-actions">
+        <button class="btn btn-danger btn-block" type="button" data-delete-id="${item.id}">删除此记录</button>
+      </div>
     `;
+    const btn = el.querySelector('[data-delete-id]');
+    btn.addEventListener('click', () => deleteRecord(item.id, item.filename));
     recentEl.appendChild(el);
   });
 }

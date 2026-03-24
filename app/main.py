@@ -12,7 +12,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from .db import init_db, insert_prediction, list_predictions, stats
+from .db import delete_prediction, get_prediction, init_db, insert_prediction, list_predictions, stats
 from .model_engine import CLASS_META, EngineUnavailable, run_inference
 
 APP_ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +34,19 @@ def _files_url(path: Optional[str]) -> Optional[str]:
     if normalized.startswith("data/"):
         normalized = normalized[len("data/") :]
     return f"/files/{normalized}"
+
+
+def _data_path(path: Optional[str]) -> Optional[Path]:
+    if not path:
+        return None
+    normalized = str(path).replace("\\", "/").lstrip("/")
+    if normalized.startswith("data/"):
+        normalized = normalized[len("data/") :]
+    candidate = (DATA_DIR / normalized).resolve()
+    data_root = DATA_DIR.resolve()
+    if data_root == candidate or data_root in candidate.parents:
+        return candidate
+    return None
 
 
 @app.on_event("startup")
@@ -144,3 +157,30 @@ def admin_stats(_: None = Depends(_admin_guard)) -> dict:
         item["image_url"] = _files_url(item["original_path"])
         item["annotated_url"] = _files_url(item.get("annotated_path"))
     return {"success": True, "stats": stats(), "recent": recent}
+
+
+@app.delete("/api/admin/predictions/{record_id}")
+def admin_delete_prediction(record_id: int, _: None = Depends(_admin_guard)) -> dict:
+    record = get_prediction(record_id)
+    if not record:
+        raise HTTPException(status_code=404, detail="记录不存在")
+
+    removed_files: list[str] = []
+    for raw_path in [record.get("original_path"), record.get("annotated_path")]:
+        target = _data_path(raw_path)
+        if target and target.exists() and target.is_file():
+            try:
+                target.unlink()
+                removed_files.append(str(target.relative_to(APP_ROOT)))
+            except Exception:
+                pass
+
+    deleted = delete_prediction(record_id)
+    if not deleted:
+        raise HTTPException(status_code=500, detail="删除记录失败")
+
+    return {
+        "success": True,
+        "deleted_id": record_id,
+        "removed_files": removed_files,
+    }

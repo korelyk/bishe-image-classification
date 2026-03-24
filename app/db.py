@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 DB_DIR = ROOT / "data"
@@ -68,6 +68,21 @@ def list_predictions(limit: int = 20) -> list[dict[str, Any]]:
             "SELECT * FROM predictions ORDER BY id DESC LIMIT ?", (limit,)
         ).fetchall()
     return [dict(row) for row in rows]
+
+
+def get_prediction(record_id: int) -> Optional[dict[str, Any]]:
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT * FROM predictions WHERE id = ? LIMIT 1", (record_id,)
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def delete_prediction(record_id: int) -> bool:
+    with get_conn() as conn:
+        cur = conn.execute("DELETE FROM predictions WHERE id = ?", (record_id,))
+        conn.commit()
+    return cur.rowcount > 0
 
 
 def stats() -> dict[str, Any]:
