@@ -5,7 +5,7 @@ import os
 import secrets
 from datetime import datetime
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -32,7 +32,7 @@ def on_startup() -> None:
     init_db()
 
 
-def _admin_guard(x_admin_password: Annotated[str | None, Header()] = None) -> None:
+def _admin_guard(x_admin_password: Annotated[Optional[str], Header()] = None) -> None:
     expected = os.environ.get("ADMIN_PASSWORD", "").strip()
     if not expected:
         return

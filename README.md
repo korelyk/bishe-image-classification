@@ -114,6 +114,8 @@ bishe-image-classification/
 
 ### 1. 创建虚拟环境
 
+> 兼容说明：当前依赖已按服务器 Python 3.9 环境锁定，`onnxruntime` 使用 `1.19.2`，可避免 3.9 环境下安装失败。
+
 ```bash
 cd bishe-image-classification
 python3 -m venv .venv

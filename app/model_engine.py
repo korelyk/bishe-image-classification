@@ -4,7 +4,7 @@ import json
 import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Union
 
 import numpy as np
 import onnxruntime as ort
@@ -66,8 +66,8 @@ IMAGENET_TO_CLASS = {
 }
 
 _lock = threading.Lock()
-_session: ort.InferenceSession | None = None
-_labels: list[str] | None = None
+_session: Optional[ort.InferenceSession] = None
+_labels: Optional[list[str]] = None
 
 
 @dataclass
@@ -77,7 +77,7 @@ class InferenceResult:
     confidence: float
     model_mode: str
     detections: list[dict[str, Any]]
-    annotated_path: str | None
+    annotated_path: Optional[str]
 
 
 class EngineUnavailable(RuntimeError):
@@ -87,9 +87,19 @@ class EngineUnavailable(RuntimeError):
 def _download_if_missing(path: Path, url: str) -> None:
     if path.exists() and path.stat().st_size > 0:
         return
-    response = requests.get(url, timeout=120)
+    tmp_path = path.with_suffix(path.suffix + ".part")
+    response = requests.get(
+        url,
+        timeout=120,
+        stream=True,
+        headers={"User-Agent": "bishe-image-classification/1.0"},
+    )
     response.raise_for_status()
-    path.write_bytes(response.content)
+    with tmp_path.open("wb") as fp:
+        for chunk in response.iter_content(chunk_size=1024 * 1024):
+            if chunk:
+                fp.write(chunk)
+    tmp_path.replace(path)
 
 
 def _load_resources() -> tuple[ort.InferenceSession, list[str]]:
@@ -127,7 +137,7 @@ def _softmax(x: np.ndarray) -> np.ndarray:
     return exp / np.sum(exp)
 
 
-def run_inference(image_path: str | Path) -> InferenceResult:
+def run_inference(image_path: Union[str, Path]) -> InferenceResult:
     path = Path(image_path)
     try:
         session, labels = _load_resources()
