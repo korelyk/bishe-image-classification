@@ -10,24 +10,24 @@
   <header class="hero">
     <div class="container hero-grid">
       <div>
-        <p class="badge">Henan Agricultural University · Graduation Design</p>
+        <p class="badge">河南农业大学 · 本科毕业设计演示系统</p>
         <h1>{{ project_name }}</h1>
         <p class="hero-text">
-          面向道路交通场景的七类目标智能识别系统，融合深度学习目标识别、历史记录留存、可视化结果展示与后台统计管理，适用于本科毕业设计展示与答辩演示。
+          本系统围绕道路交通场景图片识别任务构建，面向行人、自行车、汽车、摩托车、公交车、卡车及交通标志/信号灯等七类目标开展智能分类研究。系统集成图片上传、模型推理、候选结果展示、历史记录留存与后台统计分析功能，可用于毕业设计成果展示与答辩演示。
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#upload-panel">立即体验</a>
-          <a class="btn btn-secondary" href="/admin" target="_blank">后台面板</a>
+          <a class="btn btn-primary" href="#upload-panel">进入功能演示</a>
+          <a class="btn btn-secondary" href="/admin" target="_blank">进入后台管理</a>
         </div>
       </div>
       <div class="hero-card">
-        <h3>系统能力</h3>
+        <h3>系统主要功能</h3>
         <ul>
-          <li>图片上传与道路目标智能识别</li>
-          <li>七类场景标签统一输出</li>
-          <li>Top-5 候选标签与结果追溯</li>
-          <li>历史样本记录与统计分析</li>
-          <li>FastAPI + ONNX Runtime 轻量化部署</li>
+          <li>支持道路交通场景图片上传与智能识别</li>
+          <li>支持七类道路目标统一输出与结果说明</li>
+          <li>支持候选结果展示与识别过程留痕</li>
+          <li>支持历史记录查询与后台统计管理</li>
+          <li>支持服务器部署与在线演示访问</li>
         </ul>
       </div>
     </div>
@@ -37,28 +37,28 @@
     <section class="panel">
       <div class="panel-head">
         <div>
-          <p class="section-tag">答辩演示建议</p>
-          <h2>推荐先演示这三张样例</h2>
+          <p class="section-tag">典型测试样例</p>
+          <h2>推荐展示的三组道路场景样本</h2>
         </div>
       </div>
       <div class="history-grid">
         <article class="history-item">
-          <img class="history-thumb" src="/files/demo/bike_demo.jpg" alt="自行车演示样例" />
-          <h3>自行车样例</h3>
-          <p>推荐结果：自行车</p>
-          <p>演示价值：展示模型能识别常见道路骑行目标</p>
+          <img class="history-thumb" src="/files/demo/bike_demo.jpg" alt="自行车场景样例" />
+          <h3>自行车场景样例</h3>
+          <p>预期类别：自行车</p>
+          <p>说明：用于展示系统对常见道路骑行目标的识别能力。</p>
         </article>
         <article class="history-item">
-          <img class="history-thumb" src="/files/demo/bus_demo.jpg" alt="公交车演示样例" />
-          <h3>公交车样例</h3>
-          <p>推荐结果：公交车</p>
-          <p>演示价值：展示大目标车辆类别识别能力</p>
+          <img class="history-thumb" src="/files/demo/bus_demo.jpg" alt="公交车场景样例" />
+          <h3>公交车场景样例</h3>
+          <p>预期类别：公交车</p>
+          <p>说明：用于展示系统对大型道路车辆目标的识别能力。</p>
         </article>
         <article class="history-item">
-          <img class="history-thumb" src="/files/demo/car_demo.jpg" alt="汽车演示样例" />
-          <h3>汽车样例</h3>
-          <p>推荐结果：汽车</p>
-          <p>演示价值：适合说明 ImageNet 标签映射策略</p>
+          <img class="history-thumb" src="/files/demo/car_demo.jpg" alt="汽车场景样例" />
+          <h3>汽车场景样例</h3>
+          <p>预期类别：汽车</p>
+          <p>说明：用于展示系统标签映射与分类结果输出逻辑。</p>
         </article>
       </div>
     </section>
@@ -66,18 +66,18 @@
     <section id="upload-panel" class="panel">
       <div class="panel-head">
         <div>
-          <p class="section-tag">核心功能</p>
-          <h2>图片分类体验台</h2>
+          <p class="section-tag">功能演示</p>
+          <h2>图片分类与识别实验区</h2>
         </div>
-        <div id="health-pill" class="status-pill">正在检查服务状态…</div>
+        <div id="health-pill" class="status-pill">正在检查系统状态…</div>
       </div>
       <form id="upload-form" class="upload-form">
         <label class="upload-box">
           <input id="image-file" type="file" name="file" accept="image/*" required />
-          <span>点击选择图片，支持 JPG / PNG / WEBP</span>
-          <small>建议优先上传交通场景图片，如行人、自行车、汽车、公交车、卡车、交通标志等。</small>
+          <span>请选择待识别图片，支持 JPG / PNG / WEBP 格式</span>
+          <small>建议上传道路交通相关场景图片，如行人、自行车、汽车、公交车、卡车、交通标志或信号灯等典型目标。</small>
         </label>
-        <button class="btn btn-primary" type="submit">开始识别</button>
+        <button class="btn btn-primary" type="submit">提交图片并开始识别</button>
       </form>
       <div id="result-tip" class="tip-box hidden"></div>
       <div id="result-panel" class="result-grid hidden">
@@ -86,7 +86,7 @@
           <img id="preview-image" alt="原图预览" />
         </div>
         <div class="result-card">
-          <h3>识别结果</h3>
+          <h3>识别结果与分析</h3>
           <div class="result-main">
             <div>
               <span class="muted">主要类别</span>
@@ -99,11 +99,11 @@
           </div>
           <p id="model-mode" class="model-mode"></p>
           <div id="annotated-wrapper" class="annotated-wrapper hidden">
-            <h4>可视化标注</h4>
+            <h4>可视化结果</h4>
             <img id="annotated-image" alt="标注结果" />
           </div>
           <div>
-            <h4>候选标签明细</h4>
+            <h4>候选结果明细</h4>
             <div id="detections" class="detection-list"></div>
           </div>
         </div>
@@ -113,8 +113,8 @@
     <section class="panel">
       <div class="panel-head">
         <div>
-          <p class="section-tag">识别类别</p>
-          <h2>系统支持的七类目标</h2>
+          <p class="section-tag">类别体系</p>
+          <h2>系统支持的七类道路目标</h2>
         </div>
       </div>
       <div class="class-grid">
@@ -133,24 +133,12 @@
     <section class="panel">
       <div class="panel-head">
         <div>
-          <p class="section-tag">过程留痕</p>
-          <h2>最近识别记录</h2>
+          <p class="section-tag">运行记录</p>
+          <h2>最近识别结果记录</h2>
         </div>
         <button class="btn btn-secondary" id="refresh-history" type="button">刷新记录列表</button>
       </div>
       <div id="history-list" class="history-grid"></div>
-    </section>
-  </main>
-
-  <script src="/static/app.js"></script>
-</body>
-</html>
-l>
-html>
-"></script>
-</body>
-</html>
-ist" class="history-grid"></div>
     </section>
   </main>
 
