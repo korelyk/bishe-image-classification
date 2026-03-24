@@ -4,7 +4,7 @@ set -euo pipefail
 SERVICE_NAME="${SERVICE_NAME:-bishe-image-classification}"
 PROJECT_DIR="${PROJECT_DIR:-/root/.openclaw/workspace-taizi/bishe-image-classification}"
 APP_PORT="${APP_PORT:-19001}"
-ADMIN_PASSWORD="${ADMIN_PASSWORD:-road-admin-2026}"
+ADMIN_PASSWORD="${ADMIN_PASSWORD:-tya}"
 
 cat >/etc/systemd/system/${SERVICE_NAME}.service <<EOF
 [Unit]
