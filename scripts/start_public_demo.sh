@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PORT="${PORT:-19001}"
-HOST="${HOST:-127.0.0.1}"
+HOST="${HOST:-0.0.0.0}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-road-admin-2026}"
 
 cd "$ROOT_DIR"
