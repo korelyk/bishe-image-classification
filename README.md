@@ -205,6 +205,16 @@ bash scripts/smoke_test.sh http://127.0.0.1:19001
 bash scripts/start_public_demo.sh
 ```
 
+## 十一、常驻 systemd 服务
+
+如需将系统固定为服务器常驻服务，并使用 `IP:19001` 直接访问，可执行：
+
+```bash
+bash scripts/install_systemd_service.sh
+```
+
+服务名默认是：`bishe-image-classification`
+
 ## 十、论文与答辩材料
 
 已在 `docs/` 目录生成：
