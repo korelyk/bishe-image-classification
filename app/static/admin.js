@@ -8,6 +8,15 @@ function authHeaders() {
   return pwd ? { 'X-Admin-Password': pwd } : {};
 }
 
+function modeLabel(mode) {
+  const mapping = {
+    'mobilenetv2-onnx-imagenet-mapping': 'ONNX Runtime + MobileNetV2 标签映射',
+    'fasterrcnn-coco': 'Faster R-CNN 目标检测',
+    'resnet50-imagenet-fallback': 'ResNet50 回退分类',
+  };
+  return mapping[mode] || mode || '-';
+}
+
 function renderStats(stats = {}) {
   const byClass = (stats.by_class || []).map(item => `${item.predicted_label}：${item.count}`).join(' / ') || '暂无数据';
   statsEl.innerHTML = `
@@ -32,7 +41,7 @@ function renderRecent(items = []) {
       <h3>${item.predicted_label}</h3>
       <p>文件：${item.filename}</p>
       <p>置信度：${Number(item.confidence || 0).toFixed(3)}</p>
-      <p>模型：${item.model_mode}</p>
+      <p>模型：${modeLabel(item.model_mode)}</p>
       <p>时间：${item.created_at}</p>
     `;
     recentEl.appendChild(el);

@@ -197,6 +197,14 @@ REMOTE_PASSWORD='服务器密码' bash scripts/deploy_remote.sh
 bash scripts/smoke_test.sh http://127.0.0.1:19001
 ```
 
+## 十、公开演示脚本
+
+如需在当前服务器上快速拉起公开演示地址，可执行：
+
+```bash
+bash scripts/start_public_demo.sh
+```
+
 ## 十、论文与答辩材料
 
 已在 `docs/` 目录生成：

@@ -25,15 +25,44 @@
         <ul>
           <li>图片上传与道路目标智能识别</li>
           <li>七类场景标签统一输出</li>
-          <li>检测框可视化与结果追溯</li>
+          <li>Top-5 候选标签与结果追溯</li>
           <li>历史样本记录与统计分析</li>
-          <li>FastAPI + ONNX Runtime 部署友好</li>
+          <li>FastAPI + ONNX Runtime 轻量化部署</li>
         </ul>
       </div>
     </div>
   </header>
 
   <main class="container layout">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="section-tag">答辩演示建议</p>
+          <h2>推荐先演示这三张样例</h2>
+        </div>
+      </div>
+      <div class="history-grid">
+        <article class="history-item">
+          <img class="history-thumb" src="/files/demo/bike_demo.jpg" alt="自行车演示样例" />
+          <h3>自行车样例</h3>
+          <p>推荐结果：自行车</p>
+          <p>演示价值：展示模型能识别常见道路骑行目标</p>
+        </article>
+        <article class="history-item">
+          <img class="history-thumb" src="/files/demo/bus_demo.jpg" alt="公交车演示样例" />
+          <h3>公交车样例</h3>
+          <p>推荐结果：公交车</p>
+          <p>演示价值：展示大目标车辆类别识别能力</p>
+        </article>
+        <article class="history-item">
+          <img class="history-thumb" src="/files/demo/car_demo.jpg" alt="汽车演示样例" />
+          <h3>汽车样例</h3>
+          <p>推荐结果：汽车</p>
+          <p>演示价值：适合说明 ImageNet 标签映射策略</p>
+        </article>
+      </div>
+    </section>
+
     <section id="upload-panel" class="panel">
       <div class="panel-head">
         <div>
@@ -46,10 +75,11 @@
         <label class="upload-box">
           <input id="image-file" type="file" name="file" accept="image/*" required />
           <span>点击选择图片，支持 JPG / PNG / WEBP</span>
-          <small>建议上传交通场景图片，如行人、自行车、汽车、公交车、卡车、交通标志等。</small>
+          <small>建议优先上传交通场景图片，如行人、自行车、汽车、公交车、卡车、交通标志等。</small>
         </label>
         <button class="btn btn-primary" type="submit">开始识别</button>
       </form>
+      <div id="result-tip" class="tip-box hidden"></div>
       <div id="result-panel" class="result-grid hidden">
         <div class="result-card">
           <h3>原始图片</h3>
@@ -73,7 +103,7 @@
             <img id="annotated-image" alt="标注结果" />
           </div>
           <div>
-            <h4>目标明细</h4>
+            <h4>候选标签明细</h4>
             <div id="detections" class="detection-list"></div>
           </div>
         </div>
