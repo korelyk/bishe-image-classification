@@ -16,14 +16,24 @@ from .db import init_db, insert_prediction, list_predictions, stats
 from .model_engine import CLASS_META, EngineUnavailable, run_inference
 
 APP_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = APP_ROOT / "data"
 STATIC_DIR = APP_ROOT / "app" / "static"
 TEMPLATE_DIR = APP_ROOT / "app" / "templates"
-UPLOAD_DIR = APP_ROOT / "data" / "uploads"
+UPLOAD_DIR = DATA_DIR / "uploads"
 
 app = FastAPI(title="基于深度学习的图片分类系统", version="1.0.0")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-app.mount("/files", StaticFiles(directory=APP_ROOT / "data"), name="files")
+app.mount("/files", StaticFiles(directory=DATA_DIR), name="files")
 templates = Jinja2Templates(directory=TEMPLATE_DIR)
+
+
+def _files_url(path: Optional[str]) -> Optional[str]:
+    if not path:
+        return None
+    normalized = str(path).replace("\\", "/").lstrip("/")
+    if normalized.startswith("data/"):
+        normalized = normalized[len("data/") :]
+    return f"/files/{normalized}"
 
 
 @app.on_event("startup")
@@ -107,8 +117,8 @@ async def classify(file: UploadFile = File(...)) -> JSONResponse:
             "confidence": round(result.confidence, 4),
             "model_mode": result.model_mode,
             "detections": result.detections,
-            "image_url": f"/files/{payload['original_path']}",
-            "annotated_url": f"/files/{payload['annotated_path']}" if payload["annotated_path"] else None,
+            "image_url": _files_url(payload["original_path"]),
+            "annotated_url": _files_url(payload["annotated_path"]),
             "created_at": payload["created_at"],
         }
     )
@@ -118,8 +128,8 @@ async def classify(file: UploadFile = File(...)) -> JSONResponse:
 def history(limit: int = 20) -> dict:
     items = list_predictions(limit)
     for item in items:
-        item["image_url"] = f"/files/{item['original_path']}"
-        item["annotated_url"] = f"/files/{item['annotated_path']}" if item.get("annotated_path") else None
+        item["image_url"] = _files_url(item["original_path"])
+        item["annotated_url"] = _files_url(item.get("annotated_path"))
         try:
             item["detections"] = json.loads(item["raw_json"])
         except Exception:
@@ -131,6 +141,6 @@ def history(limit: int = 20) -> dict:
 def admin_stats(_: None = Depends(_admin_guard)) -> dict:
     recent = list_predictions(10)
     for item in recent:
-        item["image_url"] = f"/files/{item['original_path']}"
-        item["annotated_url"] = f"/files/{item['annotated_path']}" if item.get("annotated_path") else None
+        item["image_url"] = _files_url(item["original_path"])
+        item["annotated_url"] = _files_url(item.get("annotated_path"))
     return {"success": True, "stats": stats(), "recent": recent}
