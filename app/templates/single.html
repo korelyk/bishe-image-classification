@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}单图识别 - {{ project_name }}{% endblock %}
+
+{% block hero %}
+<section class="page-hero page-hero-rich">
+  <div>
+    <p class="page-tag">功能页 01</p>
+    <h2>单图识别与 Grad-CAM</h2>
+    <p class="page-desc">
+      本页用于展示最基础的识别流程：上传图片、切换模型、输出类别和置信度，并生成热力图解释模型关注区域。
+    </p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="/scenarios">进入复杂场景</a>
+    <a class="btn btn-secondary" href="/reports">查看实验报告</a>
+  </div>
+  <aside class="hero-aside">
+    <h3>演示建议</h3>
+    <div class="fact-list">
+      <span class="fact-chip">先用内置样例</span>
+      <span class="fact-chip">默认 ResNet50</span>
+      <span class="fact-chip">打开 Grad-CAM</span>
+    </div>
+  </aside>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">内置样例</p>
+      <h2>无需上传即可直接演示</h2>
+    </div>
+  </div>
+  <div class="sample-grid">
+    {% for sample in demo_samples %}
+    <article class="sample-card">
+      <img class="sample-thumb" src="{{ sample.image_url }}" alt="{{ sample.title }}" />
+      <div class="sample-body">
+        <h3>{{ sample.title }}</h3>
+        <p>{{ sample.description }}</p>
+      </div>
+      <div class="sample-actions">
+        <button class="btn btn-primary" type="button" data-sample-run data-sample-name="{{ sample.name }}">
+          一键演示
+        </button>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">单图识别</p>
+      <h2>上传图片并生成热力图</h2>
+    </div>
+  </div>
+  <form id="single-upload-form" class="upload-form">
+    <div class="form-grid">
+      <label class="field">
+        <span>推理模型</span>
+        <select id="single-model-name" name="model_name">
+          {% for item in model_options %}
+          <option value="{{ item.name }}" {% if item.name == 'resnet50' %}selected{% endif %}>{{ item.display_name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="toggle-field">
+        <input id="single-with-gradcam" type="checkbox" name="with_gradcam" checked />
+        <span>生成 Grad-CAM 热力图</span>
+      </label>
+    </div>
+    <label class="upload-box">
+      <input id="single-image-file" type="file" name="file" accept="image/*" required />
+      <span>请选择待识别图片，支持 JPG / PNG / WEBP</span>
+      <small>建议优先使用汽车、公交车、自行车、卡车、行人或交通信号灯等典型道路目标。</small>
+    </label>
+    <button class="btn btn-primary" type="submit">提交图片并开始识别</button>
+  </form>
+  <div id="result-tip" class="tip-box hidden"></div>
+  <div id="result-panel" class="result-grid hidden">
+    <div class="result-card">
+      <h3>原始图片</h3>
+      <img id="preview-image" alt="原图预览" />
+    </div>
+    <div class="result-card">
+      <h3>识别结果与分析</h3>
+      <div class="result-main">
+        <div>
+          <span class="muted">主要类别</span>
+          <p id="main-label" class="main-label">-</p>
+        </div>
+        <div>
+          <span class="muted">置信度</span>
+          <p id="main-score" class="main-score">-</p>
+        </div>
+      </div>
+      <p id="model-mode" class="model-mode"></p>
+      <div id="annotated-wrapper" class="annotated-wrapper hidden">
+        <h4>Grad-CAM 热力图</h4>
+        <img id="annotated-image" alt="Grad-CAM 热力图" />
+      </div>
+      <div>
+        <h4>候选结果明细</h4>
+        <div id="detections" class="detection-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">最近记录</p>
+      <h2>最近识别结果</h2>
+    </div>
+    <button class="btn btn-secondary" id="refresh-history" type="button">刷新记录列表</button>
+  </div>
+  <div id="history-list" class="history-grid"></div>
+</section>
+{% endblock %}

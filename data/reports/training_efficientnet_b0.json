@@ -1,0 +1,82 @@
+{
+  "model_name": "efficientnet_b0",
+  "class_names": [
+    "bicycle",
+    "bus",
+    "car",
+    "motorcycle",
+    "person",
+    "traffic_light",
+    "truck"
+  ],
+  "epochs": 8,
+  "batch_size": 8,
+  "lr": 0.001,
+  "freeze_backbone": true,
+  "device": "cpu",
+  "best_val_acc": 42.86,
+  "training_seconds": 129.81,
+  "checkpoint": "data/experiments/checkpoints/efficientnet_b0.pt",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.8718,
+      "train_acc": 25.6,
+      "val_loss": 3.2535,
+      "val_acc": 42.86
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.5623,
+      "train_acc": 57.74,
+      "val_loss": 23.2415,
+      "val_acc": 12.5
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.3662,
+      "train_acc": 67.26,
+      "val_loss": 15.4461,
+      "val_acc": 10.71
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.2618,
+      "train_acc": 66.07,
+      "val_loss": 25.0977,
+      "val_acc": 7.14
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.1179,
+      "train_acc": 73.81,
+      "val_loss": 15.1033,
+      "val_acc": 16.07
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.0474,
+      "train_acc": 75.6,
+      "val_loss": 37.8223,
+      "val_acc": 10.71
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.9489,
+      "train_acc": 78.57,
+      "val_loss": 35.7439,
+      "val_acc": 17.86
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.9266,
+      "train_acc": 77.38,
+      "val_loss": 49.0603,
+      "val_acc": 16.07
+    }
+  ],
+  "parameter_stats": {
+    "total": 4016515,
+    "trainable": 8967
+  }
+}

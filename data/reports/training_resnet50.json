@@ -1,0 +1,68 @@
+{
+  "model_name": "resnet50",
+  "class_names": [
+    "bicycle",
+    "bus",
+    "car",
+    "motorcycle",
+    "person",
+    "traffic_light",
+    "truck"
+  ],
+  "epochs": 6,
+  "batch_size": 8,
+  "lr": 0.001,
+  "freeze_backbone": true,
+  "device": "cpu",
+  "best_val_acc": 40.18,
+  "training_seconds": 742.95,
+  "checkpoint": "data/experiments/checkpoints/resnet50.pt",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.6109,
+      "train_acc": 47.54,
+      "val_loss": 2.3964,
+      "val_acc": 35.71
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.1824,
+      "train_acc": 64.96,
+      "val_loss": 3.9516,
+      "val_acc": 33.04
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.9976,
+      "train_acc": 72.54,
+      "val_loss": 4.3217,
+      "val_acc": 35.71
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.8582,
+      "train_acc": 76.79,
+      "val_loss": 5.0467,
+      "val_acc": 38.39
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.7737,
+      "train_acc": 77.9,
+      "val_loss": 4.6037,
+      "val_acc": 40.18
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.7669,
+      "train_acc": 75.89,
+      "val_loss": 5.3347,
+      "val_acc": 38.39
+    }
+  ],
+  "parameter_stats": {
+    "total": 23522375,
+    "trainable": 14343
+  }
+}

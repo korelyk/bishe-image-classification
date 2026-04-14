@@ -1,0 +1,75 @@
+{
+  "dataset_name": "coco-road7-crops",
+  "classes": [
+    "person",
+    "bicycle",
+    "car",
+    "motorcycle",
+    "bus",
+    "truck",
+    "traffic_light"
+  ],
+  "split_counts_per_class": {
+    "train": 24,
+    "val": 8,
+    "test": 8
+  },
+  "dataset_size": {
+    "train": 168,
+    "val": 56,
+    "test": 56
+  },
+  "best_accuracy_model": "ResNet50",
+  "fastest_model": "MobileNetV2",
+  "models": [
+    {
+      "model_name": "resnet50",
+      "display_name": "ResNet50",
+      "parameters_million": 23.52,
+      "trainable_million": 23.52,
+      "val_accuracy": 33.93,
+      "test_accuracy": 35.71,
+      "avg_inference_ms": 153.46,
+      "fps": 6.52,
+      "device": "cpu",
+      "checkpoint": "data/experiments/checkpoints/resnet50.pt",
+      "training_seconds": 361.65,
+      "best_val_acc_from_training": 46.43,
+      "note": "特征表达强，参数量较大",
+      "num_classes": 7
+    },
+    {
+      "model_name": "mobilenet_v2",
+      "display_name": "MobileNetV2",
+      "parameters_million": 2.23,
+      "trainable_million": 2.23,
+      "val_accuracy": 46.43,
+      "test_accuracy": 33.93,
+      "avg_inference_ms": 39.59,
+      "fps": 25.26,
+      "device": "cpu",
+      "checkpoint": "data/experiments/checkpoints/mobilenet_v2.pt",
+      "training_seconds": 99.73,
+      "best_val_acc_from_training": 50.0,
+      "note": "轻量化明显，推理速度最快",
+      "num_classes": 7
+    },
+    {
+      "model_name": "efficientnet_b0",
+      "display_name": "EfficientNet-B0",
+      "parameters_million": 4.02,
+      "trainable_million": 4.02,
+      "val_accuracy": 16.07,
+      "test_accuracy": 26.79,
+      "avg_inference_ms": 54.06,
+      "fps": 18.5,
+      "device": "cpu",
+      "checkpoint": "data/experiments/checkpoints/efficientnet_b0.pt",
+      "training_seconds": 129.81,
+      "best_val_acc_from_training": 42.86,
+      "note": "精度与速度较均衡",
+      "num_classes": 7
+    }
+  ],
+  "note": "当前实验基于公开 COCO 目标检测数据裁剪出的七类道路目标分类集，已能用于展示真实公开数据来源、训练流程、模型对比和论文实验方法。若后续拿到更贴近学校题目的专用七类数据，可直接复用现有脚本重跑。"
+}

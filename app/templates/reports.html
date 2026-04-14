@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}实验报告 - {{ project_name }}{% endblock %}
+
+{% block hero %}
+<section class="page-hero page-hero-rich">
+  <div>
+    <p class="page-tag">功能页 03</p>
+    <h2>实验报告、训练摘要与性能指标</h2>
+    <p class="page-desc">
+      本页集中展示多模型对比、训练过程、准确率、推理耗时与 FPS，便于答辩时直接讲论文实验部分。
+    </p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="/single">返回单图识别</a>
+    <a class="btn btn-secondary" href="/scenarios">查看复杂场景</a>
+  </div>
+  <aside class="hero-aside">
+    <h3>重点关注</h3>
+    <div class="fact-list">
+      <span class="fact-chip">准确率</span>
+      <span class="fact-chip">推理速度</span>
+      <span class="fact-chip">训练闭环</span>
+    </div>
+  </aside>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">系统状态</p>
+      <h2>实验结果总览</h2>
+    </div>
+    <div id="health-pill" class="status-pill">正在检查系统状态…</div>
+  </div>
+  <div class="metric-grid report-metric-grid">
+    <article class="metric-card">
+      <p class="metric-label">最佳模型</p>
+      <p id="report-best-model" class="metric-value">加载中</p>
+      <p id="report-best-accuracy" class="metric-help">正在读取准确率</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label">最快模型</p>
+      <p id="report-fastest-model" class="metric-value">加载中</p>
+      <p id="report-fastest-fps" class="metric-help">正在读取 FPS</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label">数据规模</p>
+      <p id="report-dataset-size" class="metric-value metric-value-small">加载中</p>
+      <p class="metric-help">用于说明训练、验证和测试集划分。</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label">累计训练时长</p>
+      <p id="report-training-total" class="metric-value">加载中</p>
+      <p class="metric-help">体现系统具备完整训练流程而非静态样机。</p>
+    </article>
+  </div>
+  <div id="comparison-summary" class="comparison-summary muted">正在读取离线实验报告…</div>
+  <div class="table-wrapper">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>模型</th>
+          <th>参数量</th>
+          <th>验证准确率</th>
+          <th>测试准确率</th>
+          <th>平均单张耗时</th>
+          <th>FPS</th>
+          <th>备注</th>
+        </tr>
+      </thead>
+      <tbody id="comparison-table-body">
+        <tr><td colspan="7">尚未读取到实验结果。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="report-conclusion-note" class="comparison-summary muted">正在整理实验结论…</div>
+  <div id="robustness-cards" class="stats-grid"></div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">训练摘要</p>
+      <h2>数据集与训练过程概览</h2>
+    </div>
+  </div>
+  <div id="training-summary-note" class="comparison-summary muted">正在读取训练摘要…</div>
+  <div class="table-wrapper">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>模型</th>
+          <th>训练轮数</th>
+          <th>最佳验证准确率</th>
+          <th>训练耗时</th>
+          <th>权重文件</th>
+        </tr>
+      </thead>
+      <tbody id="training-summary-body">
+        <tr><td colspan="5">尚未读取到训练摘要。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

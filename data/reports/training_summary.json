@@ -1,0 +1,248 @@
+[
+  {
+    "model_name": "resnet50",
+    "class_names": [
+      "bicycle",
+      "bus",
+      "car",
+      "motorcycle",
+      "person",
+      "traffic_light",
+      "truck"
+    ],
+    "epochs": 8,
+    "batch_size": 8,
+    "lr": 0.001,
+    "freeze_backbone": true,
+    "device": "cpu",
+    "best_val_acc": 46.43,
+    "training_seconds": 361.65,
+    "checkpoint": "data/experiments/checkpoints/resnet50.pt",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.8141,
+        "train_acc": 32.74,
+        "val_loss": 1.6398,
+        "val_acc": 46.43
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.4014,
+        "train_acc": 69.05,
+        "val_loss": 1.8541,
+        "val_acc": 41.07
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.2119,
+        "train_acc": 75.0,
+        "val_loss": 2.4417,
+        "val_acc": 39.29
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.076,
+        "train_acc": 77.38,
+        "val_loss": 2.2117,
+        "val_acc": 39.29
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.9342,
+        "train_acc": 79.17,
+        "val_loss": 3.2869,
+        "val_acc": 37.5
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.8469,
+        "train_acc": 83.33,
+        "val_loss": 2.9977,
+        "val_acc": 37.5
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.7781,
+        "train_acc": 82.74,
+        "val_loss": 4.8566,
+        "val_acc": 30.36
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.6734,
+        "train_acc": 86.31,
+        "val_loss": 4.5658,
+        "val_acc": 33.93
+      }
+    ],
+    "parameter_stats": {
+      "total": 23522375,
+      "trainable": 14343
+    }
+  },
+  {
+    "model_name": "mobilenet_v2",
+    "class_names": [
+      "bicycle",
+      "bus",
+      "car",
+      "motorcycle",
+      "person",
+      "traffic_light",
+      "truck"
+    ],
+    "epochs": 8,
+    "batch_size": 8,
+    "lr": 0.001,
+    "freeze_backbone": true,
+    "device": "cpu",
+    "best_val_acc": 50.0,
+    "training_seconds": 99.73,
+    "checkpoint": "data/experiments/checkpoints/mobilenet_v2.pt",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.9076,
+        "train_acc": 17.86,
+        "val_loss": 1.802,
+        "val_acc": 41.07
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.6414,
+        "train_acc": 47.02,
+        "val_loss": 1.7617,
+        "val_acc": 42.86
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.5088,
+        "train_acc": 54.17,
+        "val_loss": 1.7045,
+        "val_acc": 44.64
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.3093,
+        "train_acc": 66.67,
+        "val_loss": 1.6731,
+        "val_acc": 42.86
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.1971,
+        "train_acc": 62.5,
+        "val_loss": 1.659,
+        "val_acc": 42.86
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.1215,
+        "train_acc": 73.81,
+        "val_loss": 1.5759,
+        "val_acc": 48.21
+      },
+      {
+        "epoch": 7,
+        "train_loss": 1.0532,
+        "train_acc": 70.24,
+        "val_loss": 1.5705,
+        "val_acc": 50.0
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.9594,
+        "train_acc": 74.4,
+        "val_loss": 1.564,
+        "val_acc": 46.43
+      }
+    ],
+    "parameter_stats": {
+      "total": 2232839,
+      "trainable": 8967
+    }
+  },
+  {
+    "model_name": "efficientnet_b0",
+    "class_names": [
+      "bicycle",
+      "bus",
+      "car",
+      "motorcycle",
+      "person",
+      "traffic_light",
+      "truck"
+    ],
+    "epochs": 8,
+    "batch_size": 8,
+    "lr": 0.001,
+    "freeze_backbone": true,
+    "device": "cpu",
+    "best_val_acc": 42.86,
+    "training_seconds": 129.81,
+    "checkpoint": "data/experiments/checkpoints/efficientnet_b0.pt",
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.8718,
+        "train_acc": 25.6,
+        "val_loss": 3.2535,
+        "val_acc": 42.86
+      },
+      {
+        "epoch": 2,
+        "train_loss": 1.5623,
+        "train_acc": 57.74,
+        "val_loss": 23.2415,
+        "val_acc": 12.5
+      },
+      {
+        "epoch": 3,
+        "train_loss": 1.3662,
+        "train_acc": 67.26,
+        "val_loss": 15.4461,
+        "val_acc": 10.71
+      },
+      {
+        "epoch": 4,
+        "train_loss": 1.2618,
+        "train_acc": 66.07,
+        "val_loss": 25.0977,
+        "val_acc": 7.14
+      },
+      {
+        "epoch": 5,
+        "train_loss": 1.1179,
+        "train_acc": 73.81,
+        "val_loss": 15.1033,
+        "val_acc": 16.07
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.0474,
+        "train_acc": 75.6,
+        "val_loss": 37.8223,
+        "val_acc": 10.71
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.9489,
+        "train_acc": 78.57,
+        "val_loss": 35.7439,
+        "val_acc": 17.86
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.9266,
+        "train_acc": 77.38,
+        "val_loss": 49.0603,
+        "val_acc": 16.07
+      }
+    ],
+    "parameter_stats": {
+      "total": 4016515,
+      "trainable": 8967
+    }
+  }
+]

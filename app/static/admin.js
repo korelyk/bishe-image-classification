@@ -8,17 +8,43 @@ function authHeaders() {
   return pwd ? { 'X-Admin-Password': pwd } : {};
 }
 
-function modeLabel(mode) {
+function modelDisplayName(modelName) {
   const mapping = {
-    'mobilenetv2-onnx-imagenet-mapping': 'ONNX Runtime + MobileNetV2 标签映射',
-    'fasterrcnn-coco': 'Faster R-CNN 目标检测',
-    'resnet50-imagenet-fallback': 'ResNet50 回退分类',
+    resnet50: 'ResNet50',
+    mobilenet_v2: 'MobileNetV2',
+    efficientnet_b0: 'EfficientNet-B0',
   };
-  return mapping[mode] || mode || '-';
+  return mapping[modelName] || modelName || '-';
+}
+
+function modeLabel(mode) {
+  if (!mode) return '-';
+
+  if (mode.startsWith('trained-road7-checkpoint:')) {
+    const modelName = mode.split(':')[1];
+    return `${modelDisplayName(modelName)} + 7 类微调权重`;
+  }
+
+  if (mode.startsWith('hybrid-road7-checkpoint+imagenet:')) {
+    const modelName = mode.split(':')[1];
+    return `${modelDisplayName(modelName)} + 微调权重/先验融合`;
+  }
+
+  if (mode.startsWith('torchvision-imagenet-fallback:')) {
+    const modelName = mode.split(':')[1];
+    return `${modelDisplayName(modelName)} + ImageNet 回退映射`;
+  }
+
+  const mapping = {
+    'mobilenetv2-onnx-imagenet-mapping': 'MobileNetV2 + ONNX Runtime + ImageNet 映射',
+    'fasterrcnn-coco': 'Faster R-CNN 目标检测',
+    'resnet50-imagenet-fallback': 'ResNet50 + ImageNet 回退分类',
+  };
+  return mapping[mode] || mode;
 }
 
 function renderStats(stats = {}) {
-  const byClass = (stats.by_class || []).map(item => `${item.predicted_label}：${item.count}`).join(' / ') || '暂无数据';
+  const byClass = (stats.by_class || []).map((item) => `${item.predicted_label}：${item.count}`).join(' / ') || '暂无数据';
   statsEl.innerHTML = `
     <div class="stat-card"><h3>总识别次数</h3><p>${stats.total_predictions || 0}</p></div>
     <div class="stat-card"><h3>最近识别时间</h3><p style="font-size:16px;line-height:1.6">${stats.latest_prediction_at || '暂无'}</p></div>
@@ -27,7 +53,7 @@ function renderStats(stats = {}) {
 }
 
 async function deleteRecord(recordId, filename) {
-  const confirmed = window.confirm(`【删除动作】确定删除记录 #${recordId}（${filename}）吗？\n这会同时删除数据库记录及对应图片文件。`);
+  const confirmed = window.confirm(`确定删除记录 #${recordId}（${filename}）吗？\n这会同时删除数据库记录及对应图片文件。`);
   if (!confirmed) return;
 
   try {
@@ -49,7 +75,8 @@ function renderRecent(items = []) {
     recentEl.innerHTML = '<div class="history-item">暂无记录。</div>';
     return;
   }
-  items.forEach(item => {
+
+  items.forEach((item) => {
     const el = document.createElement('article');
     el.className = 'history-item';
     const img = item.annotated_url || item.image_url;

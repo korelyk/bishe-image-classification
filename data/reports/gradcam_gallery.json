@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "items": [
+    {
+      "sample": "data/demo/bike_demo.jpg",
+      "model_name": "resnet50",
+      "model_display_name": "ResNet50",
+      "predicted_label": "自行车",
+      "confidence": 0.4557,
+      "gradcam_path": "data/annotated/bike_demo_resnet50_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/bike_demo.jpg",
+      "model_name": "mobilenet_v2",
+      "model_display_name": "MobileNetV2",
+      "predicted_label": "自行车",
+      "confidence": 0.3766,
+      "gradcam_path": "data/annotated/bike_demo_mobilenet_v2_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/bike_demo.jpg",
+      "model_name": "efficientnet_b0",
+      "model_display_name": "EfficientNet-B0",
+      "predicted_label": "自行车",
+      "confidence": 0.6929,
+      "gradcam_path": "data/annotated/bike_demo_efficientnet_b0_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/bus_demo.jpg",
+      "model_name": "resnet50",
+      "model_display_name": "ResNet50",
+      "predicted_label": "公交车",
+      "confidence": 0.0392,
+      "gradcam_path": "data/annotated/bus_demo_resnet50_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/bus_demo.jpg",
+      "model_name": "mobilenet_v2",
+      "model_display_name": "MobileNetV2",
+      "predicted_label": "未识别",
+      "confidence": 0.0586,
+      "gradcam_path": "data/annotated/bus_demo_mobilenet_v2_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/bus_demo.jpg",
+      "model_name": "efficientnet_b0",
+      "model_display_name": "EfficientNet-B0",
+      "predicted_label": "公交车",
+      "confidence": 0.048,
+      "gradcam_path": "data/annotated/bus_demo_efficientnet_b0_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/car_demo.jpg",
+      "model_name": "resnet50",
+      "model_display_name": "ResNet50",
+      "predicted_label": "汽车",
+      "confidence": 0.3213,
+      "gradcam_path": "data/annotated/car_demo_resnet50_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/car_demo.jpg",
+      "model_name": "mobilenet_v2",
+      "model_display_name": "MobileNetV2",
+      "predicted_label": "汽车",
+      "confidence": 0.188,
+      "gradcam_path": "data/annotated/car_demo_mobilenet_v2_gradcam.jpg"
+    },
+    {
+      "sample": "data/demo/car_demo.jpg",
+      "model_name": "efficientnet_b0",
+      "model_display_name": "EfficientNet-B0",
+      "predicted_label": "汽车",
+      "confidence": 0.5218,
+      "gradcam_path": "data/annotated/car_demo_efficientnet_b0_gradcam.jpg"
+    }
+  ]
+}

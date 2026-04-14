@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{{ page_title }} - {{ project_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"></div>
+      <div>
+        <strong>{{ project_name }}</strong>
+        <span>毕业设计项目系统</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      {% for item in nav_items %}
+      <a class="sidebar-link {% if active_page == item.key %}is-active{% endif %}" href="{{ item.href }}">
+        <span class="nav-icon"></span>
+        <span>{{ item.label }}</span>
+      </a>
+      {% endfor %}
+    </nav>
+
+    <div class="sidebar-meta">
+      <div>版本 {{ app_version }}</div>
+      <div>模块化系统架构</div>
+    </div>
+  </aside>
+
+  <div class="app-main">
+    <header class="topbar">
+      <div class="topbar-main">
+        <p class="topbar-label">毕业设计项目</p>
+        <h1 class="topbar-title">{{ page_title }}</h1>
+      </div>
+      <div class="topbar-user">
+        <span class="user-avatar"></span>
+        <div>
+          <strong>系统运行环境</strong>
+          <small>模块已按功能划分</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-area">
+      {% block hero %}{% endblock %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

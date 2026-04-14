@@ -1,80 +1,96 @@
-# 基于深度学习的图片分类系统
+# 基于深度学习的图片分类系统（升级版）
 
-这是一个可直接运行、可部署、可用于本科毕业设计答辩演示的完整项目成品，主题为**自动驾驶道路目标七分类**。
+这是一个基于深度学习的**道路目标图片分类系统升级版**。本次升级重点补充了系统功能、实验设计与结果分析中较为关键的四类内容：
 
-## 一、项目简介
+1. **多模型对比**：ResNet50 / MobileNetV2 / EfficientNet-B0
+2. **数据增强训练**：旋转、翻转、裁剪、噪声、低照度扰动
+3. **Grad-CAM 可视化**：展示模型关注区域
+4. **复杂测试场景**：低光照、噪声、局部裁剪、实时拍照、批量识别
 
-系统面向道路交通场景图片，提供以下核心能力：
+并且进一步补上了最关键的一点：**公开数据来源与可复现训练链路**。
 
-- 用户端图片上传
-- 深度学习推理识别
-- 分类结果与候选标签展示
-- 历史记录查询
-- 后台统计与最近预测管理
-- SQLite 数据留痕
-- 服务器部署与 systemd 托管
-- 论文、摘要、答辩问答、进度说明等文档产物
+---
 
-## 二、工程化实现说明
+## 一、当前系统能力
 
-原任务书/开题报告给出的路线是“小程序 + Spring Boot + Vue3 + MySQL + PyTorch + ResNet50”。
+### 1. 在线功能
 
-为了在有限周期内交付**真正能运行、能部署、能演示、能写论文、能答辩**的本科毕设成品，本项目采用了更稳妥的工程化替代方案：
+访问 `/` 页面后可直接使用：
 
-- 前后端一体：**FastAPI + Jinja2 + 原生 JS**
-- 推理引擎：**ONNX Runtime + MobileNetV2 预训练模型**
-- 类别策略：**ImageNet 标签映射到道路七类目标**
-- 存储：**SQLite**
-- 部署：**systemd + uvicorn**
+- 单图上传识别
+- 模型切换（ResNet50 / MobileNetV2 / EfficientNet-B0）
+- Grad-CAM 热力图生成
+- 浏览器实时拍照识别
+- 多图片批量识别
+- 最近识别历史展示
+- 离线实验报告与模型对比表展示
 
-这样做的原因：
+### 2. 后台能力
 
-1. 缩短工程搭建时间，提高可交付性；
-2. 保留深度学习模型、前台页面、后台管理、数据库留痕、部署验证等毕设关键要素；
-3. 避开服务器磁盘空间受限导致的重型 CUDA 依赖安装问题；
-4. 论文中可以合理解释为“在毕设周期内采用轻量化深度学习推理方案完成工程落地，并保留后续升级空间”。
+访问 `/admin` 页面可查看：
 
-## 三、功能清单
+- 总识别次数
+- 类别分布
+- 最近识别记录
+- 数据删除管理
 
-### 1. 用户端
+### 3. 论文与实验支撑材料
 
-访问 `/` 页面可实现：
+已在仓库内生成：
 
-- 上传道路场景图片
-- 查看主分类类别
-- 查看置信度
-- 查看模型推理方式
-- 查看 Top-5 候选标签明细
-- 查看最近识别历史记录
+- `docs/model_comparison.md`：模型对比表
+- `docs/experiment_results.md`：实验结果摘要
+- `docs/upgrade_report.md`：本次升级说明
+- `data/reports/model_comparison.json`：前端读取的对比结果
+- `data/reports/robustness_report.json`：复杂场景鲁棒性结果
+- `data/reports/training_summary.json`：训练摘要
+- `data/experiments/dataset_manifest.json`：公开数据来源与标注追溯清单
+- `data/reports/gradcam_gallery.json`：Grad-CAM 样例清单
 
-### 2. 管理端
+---
 
-访问 `/admin` 页面可实现：
+## 二、技术路线
 
-- 查看总识别次数
-- 查看最近识别时间
-- 查看类别分布
-- 查看最近 10 条识别记录
-- 支持管理员口令保护（可选）
+### 在线识别系统
 
-### 3. 深度学习推理能力
+- 后端：FastAPI
+- 前端：Jinja2 + 原生 JS
+- 模型：Torchvision 预训练模型
+- 数据库：SQLite
+- 图像处理：Pillow
+- 深度学习框架：PyTorch / Torchvision
 
-本系统针对“道路七类目标”进行了统一映射：
+### 训练与实验部分
 
-- 行人 pedestrian
-- 自行车 bicycle
-- 汽车 car
-- 摩托车 motorcycle
-- 公交车 bus
-- 卡车 truck
-- 交通标志/信号灯 traffic_sign_light
+- 公开数据集：基于 **COCO 2017 val** 标注裁剪构建的 `coco-road7-crops`
+- 实验类别：`person / bicycle / car / motorcycle / bus / truck / traffic_light`
+- 实验模型：ResNet50、MobileNetV2、EfficientNet-B0
+- 训练策略：迁移学习 + 冻结骨干网络 + 微调分类头
+- 增强方式：随机裁剪、翻转、旋转、亮度对比度变化、高斯噪声、低照度模拟
 
-推理策略：
+> 说明：当前这版已经不再只是仓库样例图扩增，而是接入了公开可追溯的数据来源。若后续拿到更贴近学校题目的专用七类数据集，可直接沿用同一套脚本继续训练。
 
-1. 使用 MobileNetV2 ONNX 预训练分类模型完成整图推理；
-2. 读取 ImageNet Top-5 候选标签；
-3. 将候选标签映射到毕业设计要求的七类道路目标；
-4. 保存预测记录、模型模式、推理时间点与图片路径。
+---
+
+## 三、已生成的实验结果
+
+### 1. 主实验结果（CPU 环境）
+
+| 模型 | 参数量(M) | 类别数 | 验证准确率 | 测试准确率 | 单张耗时(ms) | FPS | 备注 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| ResNet50 | 23.52 | 7 | 33.93% | 35.71% | 153.46 | 6.52 | 当前精度最好，但速度最慢 |
+| MobileNetV2 | 2.23 | 7 | 46.43% | 33.93% | 39.59 | 25.26 | 轻量化明显，速度最快 |
+| EfficientNet-B0 | 4.02 | 7 | 16.07% | 26.79% | 54.06 | 18.50 | 当前在该公开小样本集上表现一般 |
+
+### 2. 复杂场景鲁棒性
+
+- `gaussian_noise`：ResNet50 最稳
+- `low_light`：ResNet50 相对更稳
+- `partial_crop`：MobileNetV2 更稳
+
+详细数据见：`docs/model_comparison.md`
+
+---
 
 ## 四、项目结构
 
@@ -84,37 +100,36 @@ bishe-image-classification/
 │   ├── db.py
 │   ├── main.py
 │   ├── model_engine.py
+│   ├── vision_models.py
 │   ├── static/
-│   │   ├── admin.js
-│   │   ├── app.js
-│   │   └── style.css
 │   └── templates/
-│       ├── admin.html
-│       └── index.html
 ├── data/
 │   ├── annotated/
-│   ├── models/
+│   ├── demo/
+│   ├── experiments/
+│   ├── external/
+│   ├── reports/
 │   ├── uploads/
 │   └── app.db
 ├── docs/
-│   ├── abstract.md
-│   ├── defense_qa.md
-│   ├── progress_report.md
-│   ├── thesis_full.md
-│   ├── thesis_outline.md
-│   └── requirement-summary.md
+│   ├── experiment_results.md
+│   ├── model_comparison.md
+│   └── upgrade_report.md
 ├── scripts/
-│   ├── deploy_remote.sh
-│   └── smoke_test.sh
+│   ├── benchmark_models.py
+│   ├── build_demo_dataset.py
+│   ├── generate_gradcam_gallery.py
+│   ├── run_all_experiments.sh
+│   └── train_models.py
 ├── requirements.txt
 └── README.md
 ```
 
+---
+
 ## 五、本地运行
 
-### 1. 创建虚拟环境
-
-> 兼容说明：当前依赖已按服务器 Python 3.9 环境锁定，`onnxruntime` 使用 `1.19.2`，可避免 3.9 环境下安装失败。
+### 1. 安装依赖
 
 ```bash
 cd bishe-image-classification
@@ -124,29 +139,46 @@ pip install -U pip
 pip install -r requirements.txt
 ```
 
-### 2. 启动服务
+### 2. 启动系统
 
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 19001
 ```
 
-### 3. 访问地址
+访问地址：
 
 - 用户端：`http://127.0.0.1:19001`
 - 管理端：`http://127.0.0.1:19001/admin`
 - 健康检查：`http://127.0.0.1:19001/api/health`
 
-## 六、环境变量
+---
 
-| 变量名 | 说明 | 默认值 |
-|---|---|---|
-| `ADMIN_PASSWORD` | 管理端 API 口令，可选 | 空 |
+## 六、离线实验运行方式
 
-设置示例：
+### 方案一：一步跑完
 
 ```bash
-export ADMIN_PASSWORD='road-admin-2026'
+bash scripts/run_all_experiments.sh
 ```
+
+### 方案二：分步执行
+
+```bash
+source .venv/bin/activate
+python scripts/build_demo_dataset.py
+python scripts/train_models.py --epochs 8 --batch-size 8
+python scripts/benchmark_models.py
+python scripts/generate_gradcam_gallery.py
+```
+
+生成产物：
+
+- `data/experiments/demo_dataset/`：训练/验证/测试集
+- `data/experiments/checkpoints/*.pt`：模型权重
+- `data/reports/*.json`：实验报告
+- `data/annotated/*gradcam.jpg`：Grad-CAM 热力图
+
+---
 
 ## 七、接口说明
 
@@ -156,86 +188,37 @@ export ADMIN_PASSWORD='road-admin-2026'
 GET /api/health
 ```
 
-### 2. 图片识别
+### 2. 单图识别
 
 ```http
 POST /api/classify
 Content-Type: multipart/form-data
-字段：file
+字段：
+- file
+- model_name=resnet50|mobilenet_v2|efficientnet_b0
+- with_gradcam=true|false
 ```
 
-### 3. 历史记录
+### 3. 批量识别
+
+```http
+POST /api/classify/batch
+Content-Type: multipart/form-data
+字段：
+- files（多文件）
+- model_name
+- with_gradcam
+```
+
+### 4. 历史记录
 
 ```http
 GET /api/history?limit=12
 ```
 
-### 4. 后台统计
+### 5. 对比实验报告
 
 ```http
-GET /api/admin/stats
-Header: X-Admin-Password: <password>
+GET /api/reports/model-comparison
+GET /api/reports/robustness
 ```
-
-## 八、部署说明
-
-项目提供远程部署脚本：
-
-```bash
-REMOTE_PASSWORD='服务器密码' bash scripts/deploy_remote.sh
-```
-
-默认部署信息：
-
-- 部署目录：`/opt/bishe-image-classification`
-- systemd 服务名：`bishe-image-classification.service`
-- 服务端口：`19001`
-
-## 九、验证脚本
-
-```bash
-bash scripts/smoke_test.sh http://127.0.0.1:19001
-```
-
-## 十、公开演示脚本
-
-如需在当前服务器上快速拉起公开演示地址，可执行：
-
-```bash
-bash scripts/start_public_demo.sh
-```
-
-## 十一、常驻 systemd 服务
-
-如需将系统固定为服务器常驻服务，并使用 `IP:19001` 直接访问，可执行：
-
-```bash
-bash scripts/install_systemd_service.sh
-```
-
-服务名默认是：`bishe-image-classification`
-
-## 十、论文与答辩材料
-
-已在 `docs/` 目录生成：
-
-- `thesis_outline.md`
-- `thesis_full.md`
-- `abstract.md`
-- `defense_qa.md`
-- `progress_report.md`
-
-## 十一、适合作为毕业设计答辩的亮点
-
-1. 深度学习能力真实可运行；
-2. 具有完整前台、后台、数据库、部署链路；
-3. 可展示工程化折中与技术选型思路；
-4. 可清楚说明七类道路目标映射逻辑；
-5. 可结合论文说明“原计划路线”与“实际落地路线”的差异及合理性。
-
-## 十二、注意事项
-
-- 首次推理会自动下载 ONNX 模型与标签文件到 `data/models/`；
-- CPU 环境下推理速度会慢于 GPU，但部署体积更轻；
-- 本项目强调毕设演示与工程可交付性，不宣称达到工业级自动驾驶实时性能；
-- 若未来继续扩展，可替换为自训练 YOLO / ResNet、接入 MySQL、Vue 前端或微信小程序。

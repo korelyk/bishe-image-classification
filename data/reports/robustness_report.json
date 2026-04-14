@@ -1,0 +1,25 @@
+{
+  "dataset": "robustness-mini-suite",
+  "items": [
+    {
+      "scene": "gaussian_noise",
+      "best_model": "ResNet50",
+      "summary": "ResNet50 100.0% / MobileNetV2 85.71% / EfficientNet-B0 57.14%"
+    },
+    {
+      "scene": "low_light",
+      "best_model": "ResNet50",
+      "summary": "ResNet50 42.86% / MobileNetV2 28.57% / EfficientNet-B0 28.57%"
+    },
+    {
+      "scene": "normal",
+      "best_model": "ResNet50",
+      "summary": "ResNet50 28.57% / EfficientNet-B0 28.57% / MobileNetV2 14.29%"
+    },
+    {
+      "scene": "partial_crop",
+      "best_model": "MobileNetV2",
+      "summary": "MobileNetV2 57.14% / ResNet50 42.86% / EfficientNet-B0 28.57%"
+    }
+  ]
+}

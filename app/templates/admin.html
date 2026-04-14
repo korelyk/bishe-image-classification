@@ -1,41 +1,65 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>后台管理 · {{ project_name }}</title>
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <main class="container admin-layout">
-    <section class="panel">
-      <div class="panel-head">
-        <div>
-          <p class="section-tag">管理后台</p>
-          <h1>{{ project_name }}</h1>
-        </div>
-        <button id="admin-refresh" class="btn btn-primary" type="button">刷新面板</button>
-      </div>
-      <p class="muted">
-        若服务器设置了管理员口令，请在下方输入后查看统计。未设置口令时可直接查看。
-      </p>
-      <div class="admin-auth">
-        <input id="admin-password" type="password" placeholder="管理员口令（可留空）" />
-      </div>
-      <div id="admin-stats" class="stats-grid"></div>
-      <p class="muted admin-hint">⚠️ 后台支持删除最近识别记录；删除前会弹出确认，删除后会同步移除对应图片文件。</p>
-    </section>
+{% extends "base.html" %}
 
-    <section class="panel">
-      <div class="panel-head">
-        <div>
-          <p class="section-tag">最近结果</p>
-          <h2>近 10 条识别记录</h2>
-        </div>
-      </div>
-      <div id="admin-recent" class="history-grid"></div>
-    </section>
-  </main>
-  <script src="/static/admin.js"></script>
-</body>
-</html>
+{% block title %}后台管理 - {{ project_name }}{% endblock %}
+
+{% block hero %}
+<section class="page-hero page-hero-rich">
+  <div>
+    <p class="page-tag">管理后台</p>
+    <h2>识别统计与记录管理</h2>
+    <p class="page-desc">
+      用于查看识别统计、最近记录，并在需要时删除识别结果。若服务器设置了管理员口令，请先输入后再刷新数据。
+    </p>
+  </div>
+  <div class="page-actions">
+    <button id="admin-refresh" class="btn btn-primary" type="button">刷新面板</button>
+  </div>
+  <aside class="hero-aside">
+    <h3>后台能力</h3>
+    <div class="fact-list">
+      <span class="fact-chip">识别统计</span>
+      <span class="fact-chip">记录检索</span>
+      <span class="fact-chip">安全删除</span>
+    </div>
+  </aside>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">访问控制</p>
+      <h2>管理员验证</h2>
+    </div>
+  </div>
+  <div class="admin-auth">
+    <input id="admin-password" type="password" placeholder="管理员口令（可留空）" />
+  </div>
+  <p class="muted admin-hint">删除记录时会同步移除数据库记录和对应图片文件。</p>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">后台统计</p>
+      <h2>识别数据概览</h2>
+    </div>
+  </div>
+  <div id="admin-stats" class="stats-grid"></div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="section-tag">最近结果</p>
+      <h2>最近 10 条识别记录</h2>
+    </div>
+  </div>
+  <div id="admin-recent" class="history-grid"></div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/admin.js"></script>
+{% endblock %}
