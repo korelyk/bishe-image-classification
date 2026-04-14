@@ -1,0 +1,14 @@
+*.md text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.sh text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.docx binary
+*.onnx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.db binary
