@@ -8,15 +8,15 @@
     <p class="page-tag">功能页 01</p>
     <h2>单图识别与 Grad-CAM</h2>
     <p class="page-desc">
-      本页用于展示最基础的识别流程：上传图片、切换模型、输出类别和置信度，并生成热力图解释模型关注区域。
+      上传单张道路场景图片后，系统会输出类别、置信度和候选结果，并可生成 Grad-CAM 热力图展示模型关注区域。
     </p>
   </div>
   <div class="page-actions">
     <a class="btn btn-primary" href="/scenarios">进入复杂场景</a>
-    <a class="btn btn-secondary" href="/reports">查看实验报告</a>
+    <a class="btn btn-secondary" href="/reports">查看评估报告</a>
   </div>
   <aside class="hero-aside">
-    <h3>演示建议</h3>
+    <h3>识别建议</h3>
     <div class="fact-list">
       <span class="fact-chip">先用内置样例</span>
       <span class="fact-chip">默认 ResNet50</span>
@@ -31,7 +31,7 @@
   <div class="panel-head">
     <div>
       <p class="section-tag">内置样例</p>
-      <h2>无需上传即可直接演示</h2>
+      <h2>内置样例快速识别</h2>
     </div>
   </div>
   <div class="sample-grid">
@@ -44,7 +44,7 @@
       </div>
       <div class="sample-actions">
         <button class="btn btn-primary" type="button" data-sample-run data-sample-name="{{ sample.name }}">
-          一键演示
+          快速识别
         </button>
       </div>
     </article>

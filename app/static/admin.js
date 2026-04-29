@@ -2,10 +2,25 @@ const statsEl = document.getElementById('admin-stats');
 const recentEl = document.getElementById('admin-recent');
 const refreshBtn = document.getElementById('admin-refresh');
 const passwordInput = document.getElementById('admin-password');
+const loginBtn = document.getElementById('admin-login');
+const authStatus = document.getElementById('admin-auth-status');
+
+const ADMIN_PASSWORD_STORAGE_KEY = 'bishe-admin-password';
+
+const savedPassword = sessionStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY);
+if (savedPassword) {
+  passwordInput.value = savedPassword;
+}
 
 function authHeaders() {
   const pwd = passwordInput.value.trim();
   return pwd ? { 'X-Admin-Password': pwd } : {};
+}
+
+function setAuthStatus(message, type = 'muted') {
+  if (!authStatus) return;
+  authStatus.className = `admin-hint auth-status auth-status-${type}`;
+  authStatus.textContent = message;
 }
 
 function modelDisplayName(modelName) {
@@ -99,18 +114,50 @@ function renderRecent(items = []) {
 }
 
 async function loadAdmin() {
+  const pwd = passwordInput.value.trim();
+  if (!pwd) {
+    setAuthStatus('请输入后台登录键后点击“登录后台”。', 'warning');
+    statsEl.innerHTML = '<div class="history-item">等待管理员验证。</div>';
+    recentEl.innerHTML = '';
+    return;
+  }
+
+  setAuthStatus('正在验证并加载后台数据...', 'muted');
+  if (loginBtn) loginBtn.disabled = true;
+  if (refreshBtn) refreshBtn.disabled = true;
+
   try {
     const res = await fetch('/api/admin/stats', { headers: authHeaders() });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.detail || '加载失败');
+    sessionStorage.setItem(ADMIN_PASSWORD_STORAGE_KEY, pwd);
+    setAuthStatus('验证成功，后台数据已加载。', 'success');
     renderStats(data.stats || {});
     renderRecent(data.recent || []);
   } catch (err) {
+    setAuthStatus(err.message || '验证失败，请检查登录键。', 'error');
     statsEl.innerHTML = `<div class="history-item">${err.message}</div>`;
     recentEl.innerHTML = '';
+  } finally {
+    if (loginBtn) loginBtn.disabled = false;
+    if (refreshBtn) refreshBtn.disabled = false;
   }
 }
 
 refreshBtn.addEventListener('click', loadAdmin);
-passwordInput.addEventListener('change', loadAdmin);
-loadAdmin();
+if (loginBtn) {
+  loginBtn.addEventListener('click', loadAdmin);
+}
+passwordInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    loadAdmin();
+  }
+});
+
+if (savedPassword) {
+  loadAdmin();
+} else {
+  setAuthStatus('输入登录键后点击“登录后台”，或直接按回车。', 'muted');
+  statsEl.innerHTML = '<div class="history-item">等待管理员验证。</div>';
+}

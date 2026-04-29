@@ -8,15 +8,15 @@
     <p class="page-tag">功能页 02</p>
     <h2>复杂场景、实时识别与批量识别</h2>
     <p class="page-desc">
-      本页集中展示特殊情况处理能力，包括实时抓拍、批量识别，以及低照度、噪声和局部裁剪压力测试。
+      聚合实时抓拍、批量识别与低照度、噪声、局部裁剪等压力测试，用于观察模型在复杂输入条件下的稳定性。
     </p>
   </div>
   <div class="page-actions">
-    <a class="btn btn-primary" href="/reports">进入实验报告</a>
+    <a class="btn btn-primary" href="/reports">进入评估报告</a>
     <a class="btn btn-secondary" href="/single">返回单图识别</a>
   </div>
   <aside class="hero-aside">
-    <h3>答辩可讲内容</h3>
+    <h3>能力范围</h3>
     <div class="fact-list">
       <span class="fact-chip">实时性</span>
       <span class="fact-chip">鲁棒性</span>
@@ -31,21 +31,21 @@
   <div class="panel-head">
     <div>
       <p class="section-tag">能力说明</p>
-      <h2>本页适合回答的老师问题</h2>
+      <h2>复杂输入处理能力</h2>
     </div>
   </div>
   <div class="overview-grid">
     <article class="overview-card">
       <h3>是否支持实时识别</h3>
-      <p>可直接调用浏览器摄像头抓拍并识别，适合现场演示系统的实时交互能力。</p>
+      <p>可直接调用浏览器摄像头抓拍并识别，适合检查系统的实时交互和响应速度。</p>
     </article>
     <article class="overview-card">
       <h3>是否支持多图处理</h3>
-      <p>支持批量上传图片并统一识别，用于说明系统不仅能处理单张输入。</p>
+      <p>支持批量上传图片并统一识别，便于连续处理多张道路场景图片。</p>
     </article>
     <article class="overview-card">
       <h3>是否考虑特殊场景</h3>
-      <p>支持低照度、噪声和局部裁剪压力测试，可直接展示鲁棒性结果。</p>
+      <p>支持低照度、噪声和局部裁剪压力测试，输出不同扰动条件下的识别结果。</p>
     </article>
   </div>
 </section>
@@ -54,7 +54,7 @@
   <div class="panel-head">
     <div>
       <p class="section-tag">共享设置</p>
-      <h2>复杂场景演示模型</h2>
+      <h2>复杂场景分析模型</h2>
     </div>
     <label class="field panel-control">
       <span>推理模型</span>
@@ -68,7 +68,7 @@
   <div class="two-col-grid">
     <div class="result-card">
       <h3>实时抓拍识别</h3>
-      <p class="muted">浏览器调用摄像头，抓拍当前画面后立即进行识别，用于演示系统的实时响应能力。</p>
+      <p class="muted">浏览器调用摄像头，抓拍当前画面后立即进行识别，用于检验系统实时响应能力。</p>
       <div class="camera-box">
         <video id="camera-video" autoplay playsinline muted></video>
         <canvas id="camera-canvas" class="hidden"></canvas>
@@ -84,7 +84,7 @@
         <label class="upload-box small-upload-box">
           <input id="batch-files" type="file" name="files" accept="image/*" multiple />
           <span>一次选择多张图片进行批量识别</span>
-          <small>批量模式默认关闭 Grad-CAM，用于更直观地展示吞吐能力。</small>
+          <small>批量模式默认关闭 Grad-CAM，以提升连续图片处理效率。</small>
         </label>
         <button class="btn btn-primary" type="submit">开始批量识别</button>
       </form>
@@ -104,7 +104,7 @@
     <label class="upload-box">
       <input id="stress-image-file" type="file" name="file" accept="image/*" required />
       <span>选择一张图片，自动生成低照度、噪声、局部裁剪三种场景</span>
-      <small>用于答辩时快速展示“系统已经考虑特殊情况”。</small>
+      <small>系统会自动生成三种扰动图像，并返回对应识别结果与置信度。</small>
     </label>
     <button class="btn btn-primary" type="submit">执行复杂场景压力测试</button>
   </form>

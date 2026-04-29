@@ -3,14 +3,17 @@ from __future__ import annotations
 import json
 import os
 import secrets
+from io import BytesIO
 from datetime import datetime
 from pathlib import Path
 from typing import Annotated, Any, Optional
 
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from PIL import Image, UnidentifiedImageError
+from starlette.concurrency import run_in_threadpool
 
 from .db import delete_prediction, get_prediction, init_db, insert_prediction, list_predictions, stats
 from .model_engine import (
@@ -30,13 +33,16 @@ REPORTS_DIR = DATA_DIR / "reports"
 DEMO_DIR = DATA_DIR / "demo"
 PROJECT_NAME = "基于深度学习的图片分类系统"
 
-APP_VERSION = "2.4.0"
+APP_VERSION = "2.4.1"
+MAX_UPLOAD_BYTES = 8 * 1024 * 1024
+ALLOWED_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
+ALLOWED_FILE_ROOTS = ("uploads", "annotated", "stress", "demo")
 
 NAV_ITEMS = [
     {"key": "home", "label": "系统总览", "href": "/"},
     {"key": "single", "label": "单图识别", "href": "/single"},
     {"key": "scenarios", "label": "复杂场景", "href": "/scenarios"},
-    {"key": "reports", "label": "实验报告", "href": "/reports"},
+    {"key": "reports", "label": "评估报告", "href": "/reports"},
     {"key": "admin", "label": "后台管理", "href": "/admin"},
 ]
 
@@ -44,7 +50,7 @@ PAGE_TITLES = {
     "home": "系统总览",
     "single": "单图识别",
     "scenarios": "复杂场景",
-    "reports": "实验报告",
+    "reports": "评估报告",
     "admin": "后台管理",
 }
 
@@ -71,30 +77,73 @@ DEMO_SAMPLES = [
 
 app = FastAPI(title=PROJECT_NAME, version=APP_VERSION)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-app.mount("/files", StaticFiles(directory=DATA_DIR), name="files")
 templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
 
-def _files_url(path: Optional[str]) -> Optional[str]:
+def _relative_data_path(path: Optional[str]) -> Optional[str]:
     if not path:
         return None
     normalized = str(path).replace("\\", "/").lstrip("/")
     if normalized.startswith("data/"):
         normalized = normalized[len("data/") :]
+    if not normalized or ".." in Path(normalized).parts:
+        return None
+    return normalized
+
+
+def _files_url(path: Optional[str]) -> Optional[str]:
+    normalized = _relative_data_path(path)
+    if not normalized:
+        return None
     return f"/files/{normalized}"
 
 
 def _data_path(path: Optional[str]) -> Optional[Path]:
-    if not path:
+    normalized = _relative_data_path(path)
+    if not normalized:
         return None
-    normalized = str(path).replace("\\", "/").lstrip("/")
-    if normalized.startswith("data/"):
-        normalized = normalized[len("data/") :]
     candidate = (DATA_DIR / normalized).resolve()
     data_root = DATA_DIR.resolve()
     if data_root == candidate or data_root in candidate.parents:
         return candidate
     return None
+
+
+def _allowed_public_data_path(path: Optional[str]) -> Optional[Path]:
+    normalized = _relative_data_path(path)
+    if not normalized:
+        return None
+    parts = Path(normalized).parts
+    if not parts or parts[0] not in ALLOWED_FILE_ROOTS:
+        return None
+    candidate = _data_path(normalized)
+    if candidate and candidate.exists() and candidate.is_file():
+        return candidate
+    return None
+
+
+def _validate_model_name(model_name: str) -> str:
+    normalized = (model_name or "").strip()
+    allowed = {item["name"] for item in get_available_models()}
+    if normalized not in allowed:
+        raise HTTPException(status_code=400, detail=f"不支持的模型：{model_name}")
+    return normalized
+
+
+def _validate_upload(file: UploadFile, content: bytes) -> None:
+    if not content:
+        raise HTTPException(status_code=400, detail="上传文件为空")
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="单张图片不能超过 8MB")
+
+    suffix = Path(file.filename or "").suffix.lower()
+    if suffix not in ALLOWED_IMAGE_SUFFIXES:
+        raise HTTPException(status_code=400, detail="仅支持 JPG、PNG、WEBP 图片")
+
+    try:
+        Image.open(BytesIO(content)).verify()
+    except (UnidentifiedImageError, OSError) as exc:
+        raise HTTPException(status_code=400, detail="上传内容不是有效图片") from exc
 
 
 def _load_report_json(filename: str) -> dict[str, Any]:
@@ -124,7 +173,9 @@ def _admin_guard(x_admin_password: Annotated[Optional[str], Header()] = None) ->
 
 
 def _store_upload(file: UploadFile, content: bytes) -> Path:
-    suffix = Path(file.filename or "upload.jpg").suffix or ".jpg"
+    suffix = Path(file.filename or "upload.jpg").suffix.lower()
+    if suffix not in ALLOWED_IMAGE_SUFFIXES:
+        suffix = ".jpg"
     target = UPLOAD_DIR / f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{secrets.token_hex(8)}{suffix}"
     target.write_bytes(content)
     return target
@@ -221,6 +272,14 @@ def _is_deletable_data_file(target: Path) -> bool:
     return any(root == target or root in target.parents for root in allowed_roots)
 
 
+@app.get("/files/{file_path:path}")
+def serve_data_file(file_path: str) -> FileResponse:
+    target = _allowed_public_data_path(file_path)
+    if not target:
+        raise HTTPException(status_code=404, detail="文件不存在")
+    return FileResponse(target)
+
+
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
@@ -307,13 +366,18 @@ async def classify(
     model_name: str = Form("resnet50"),
     with_gradcam: bool = Form(True),
 ) -> JSONResponse:
+    model_name = _validate_model_name(model_name)
     content = await file.read()
-    if not content:
-        raise HTTPException(status_code=400, detail="上传文件为空")
+    _validate_upload(file, content)
 
     target = _store_upload(file, content)
     try:
-        result = run_inference(target, model_name=model_name, with_gradcam=with_gradcam)
+        result = await run_in_threadpool(
+            run_inference,
+            target,
+            model_name=model_name,
+            with_gradcam=with_gradcam,
+        )
     except EngineUnavailable as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -327,6 +391,7 @@ def classify_sample(
     model_name: str = Form("resnet50"),
     with_gradcam: bool = Form(True),
 ) -> JSONResponse:
+    model_name = _validate_model_name(model_name)
     sample, target = _sample_target(sample_name)
     try:
         result = run_inference(target, model_name=model_name, with_gradcam=with_gradcam)
@@ -346,6 +411,7 @@ async def classify_batch(
     model_name: str = Form("resnet50"),
     with_gradcam: bool = Form(False),
 ) -> JSONResponse:
+    model_name = _validate_model_name(model_name)
     if not files:
         raise HTTPException(status_code=400, detail="请至少上传 1 张图片")
     if len(files) > 12:
@@ -354,12 +420,20 @@ async def classify_batch(
     items: list[dict[str, Any]] = []
     for file in files:
         content = await file.read()
-        if not content:
+        try:
+            _validate_upload(file, content)
+        except HTTPException as exc:
+            items.append({"success": False, "filename": file.filename, "detail": exc.detail})
             continue
 
         target = _store_upload(file, content)
         try:
-            result = run_inference(target, model_name=model_name, with_gradcam=with_gradcam)
+            result = await run_in_threadpool(
+                run_inference,
+                target,
+                model_name=model_name,
+                with_gradcam=with_gradcam,
+            )
         except EngineUnavailable as exc:
             items.append({"success": False, "filename": file.filename, "detail": str(exc)})
             continue
@@ -383,13 +457,13 @@ async def classify_stress_test(
     file: UploadFile = File(...),
     model_name: str = Form("resnet50"),
 ) -> JSONResponse:
+    model_name = _validate_model_name(model_name)
     content = await file.read()
-    if not content:
-        raise HTTPException(status_code=400, detail="上传文件为空")
+    _validate_upload(file, content)
 
     target = _store_upload(file, content)
     try:
-        items = run_stress_test(target, model_name=model_name)
+        items = await run_in_threadpool(run_stress_test, target, model_name=model_name)
     except EngineUnavailable as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -415,6 +489,7 @@ async def classify_stress_test(
 
 @app.get("/api/history")
 def history(limit: int = 20) -> dict[str, Any]:
+    limit = max(1, min(limit, 100))
     items = [_response_from_history(item) for item in list_predictions(limit)]
     return {"success": True, "items": items}
 

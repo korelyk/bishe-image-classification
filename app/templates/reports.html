@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}实验报告 - {{ project_name }}{% endblock %}
+{% block title %}评估报告 - {{ project_name }}{% endblock %}
 
 {% block hero %}
 <section class="page-hero page-hero-rich">
   <div>
     <p class="page-tag">功能页 03</p>
-    <h2>实验报告、训练摘要与性能指标</h2>
+    <h2>评估报告、训练摘要与性能指标</h2>
     <p class="page-desc">
-      本页集中展示多模型对比、训练过程、准确率、推理耗时与 FPS，便于答辩时直接讲论文实验部分。
+      集中展示模型训练、准确率、推理耗时与 FPS 等评估指标，用于判断不同模型在道路目标识别任务中的综合表现。
     </p>
   </div>
   <div class="page-actions">
@@ -31,7 +31,7 @@
   <div class="panel-head">
     <div>
       <p class="section-tag">系统状态</p>
-      <h2>实验结果总览</h2>
+      <h2>模型评估总览</h2>
     </div>
     <div id="health-pill" class="status-pill">正在检查系统状态…</div>
   </div>
@@ -49,7 +49,7 @@
     <article class="metric-card">
       <p class="metric-label">数据规模</p>
       <p id="report-dataset-size" class="metric-value metric-value-small">加载中</p>
-      <p class="metric-help">用于说明训练、验证和测试集划分。</p>
+      <p class="metric-help">展示训练、验证和测试集的独立划分规模。</p>
     </article>
     <article class="metric-card">
       <p class="metric-label">累计训练时长</p>
@@ -57,7 +57,7 @@
       <p class="metric-help">体现系统具备完整训练流程而非静态样机。</p>
     </article>
   </div>
-  <div id="comparison-summary" class="comparison-summary muted">正在读取离线实验报告…</div>
+  <div id="comparison-summary" class="comparison-summary muted">正在读取模型评估数据…</div>
   <div class="table-wrapper">
     <table class="comparison-table">
       <thead>
@@ -72,11 +72,11 @@
         </tr>
       </thead>
       <tbody id="comparison-table-body">
-        <tr><td colspan="7">尚未读取到实验结果。</td></tr>
+        <tr><td colspan="7">尚未读取到评估结果。</td></tr>
       </tbody>
     </table>
   </div>
-  <div id="report-conclusion-note" class="comparison-summary muted">正在整理实验结论…</div>
+  <div id="report-conclusion-note" class="comparison-summary muted">正在整理评估结论…</div>
   <div id="robustness-cards" class="stats-grid"></div>
 </section>
 

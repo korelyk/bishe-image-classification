@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{{ page_title }} - {{ project_name }}{% endblock %}</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23172235'/%3E%3Ccircle cx='28' cy='32' r='14' fill='none' stroke='%2338bdf8' stroke-width='6'/%3E%3Cpath d='M35 20h6v24h-6z' fill='%2322c55e'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/static/style.css?v={{ app_version }}-ui2" />
 </head>
 <body class="dashboard-shell">
   <aside class="sidebar">
@@ -12,7 +13,7 @@
       <div class="brand-mark"></div>
       <div>
         <strong>{{ project_name }}</strong>
-        <span>毕业设计项目系统</span>
+        <span>道路目标识别平台</span>
       </div>
     </div>
 
@@ -34,14 +35,14 @@
   <div class="app-main">
     <header class="topbar">
       <div class="topbar-main">
-        <p class="topbar-label">毕业设计项目</p>
+        <p class="topbar-label">视觉识别工作台</p>
         <h1 class="topbar-title">{{ page_title }}</h1>
       </div>
       <div class="topbar-user">
         <span class="user-avatar"></span>
         <div>
-          <strong>系统运行环境</strong>
-          <small>模块已按功能划分</small>
+          <strong>系统运行中</strong>
+          <small>模型、数据与服务状态正常</small>
         </div>
       </div>
     </header>
@@ -52,7 +53,7 @@
     </main>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v={{ app_version }}-ui2"></script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

@@ -34,8 +34,13 @@
     </div>
   </div>
   <div class="admin-auth">
-    <input id="admin-password" type="password" placeholder="管理员口令（可留空）" />
+    <label class="field admin-password-field">
+      <span>管理员口令</span>
+      <input id="admin-password" type="password" placeholder="请输入后台登录键" autocomplete="current-password" />
+    </label>
+    <button id="admin-login" class="btn btn-primary" type="button">登录后台</button>
   </div>
+  <p id="admin-auth-status" class="muted admin-hint">输入登录键后点击“登录后台”，或直接按回车。</p>
   <p class="muted admin-hint">删除记录时会同步移除数据库记录和对应图片文件。</p>
 </section>
 

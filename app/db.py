@@ -11,8 +11,10 @@ DB_PATH = DB_DIR / "app.db"
 
 def get_conn() -> sqlite3.Connection:
     DB_DIR.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA busy_timeout = 30000")
+    conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 
@@ -33,6 +35,13 @@ def init_db() -> None:
                 created_at TEXT NOT NULL
             )
             """
+        )
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_predictions_created_at ON predictions(created_at DESC)"
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_predictions_label ON predictions(predicted_label)"
         )
         conn.commit()
 

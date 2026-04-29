@@ -5,11 +5,11 @@
 {% block hero %}
 <section class="page-hero page-hero-rich">
   <div>
-    <p class="page-tag">项目成品</p>
+    <p class="page-tag">系统概览</p>
     <h2>道路目标图像分类系统</h2>
     <p class="page-desc">
-      当前系统已不再是单页功能堆叠，而是具备完整业务流程与模块化结构的图像分类系统：前端按功能分模块组织，
-      后端已打通图像识别、历史记录、实验报告、复杂场景测试和后台管理等核心功能，形成了较为完整的系统架构与应用闭环。
+      系统围绕道路目标识别流程构建，整合图像上传、模型推理、热力图解释、历史记录、复杂场景测试和后台管理等模块，
+      为多模型图像分类提供统一的分析入口。
     </p>
     <div class="page-actions">
       <a class="btn btn-primary" href="/single">进入识别模块</a>
@@ -35,7 +35,7 @@
   <div class="panel-head">
     <div>
       <p class="section-tag">项目总览</p>
-      <h2>成品项目关键指标</h2>
+      <h2>系统关键指标</h2>
     </div>
     <div id="health-pill" class="status-pill">正在检查系统状态…</div>
   </div>
@@ -87,7 +87,7 @@
     </article>
     <article class="feature-showcase-card">
       <h3>数据增强训练</h3>
-      <p>训练流程中纳入旋转、翻转、裁剪和复杂场景增强，实验结果可直接用于论文与答辩展示。</p>
+      <p>训练流程纳入旋转、翻转、裁剪和复杂场景增强，用于提升模型在真实道路图像中的泛化表现。</p>
     </article>
     <article class="feature-showcase-card">
       <h3>Grad-CAM 可解释性</h3>
@@ -99,7 +99,7 @@
     </article>
     <article class="feature-showcase-card">
       <h3>训练与实验闭环</h3>
-      <p>不只展示识别结果，系统还保留训练摘要、模型对比、实验报告与历史识别记录。</p>
+      <p>不只展示识别结果，系统还保留训练摘要、模型对比、评估报告与历史识别记录。</p>
     </article>
     <article class="feature-showcase-card">
       <h3>完整功能链路</h3>
@@ -112,24 +112,24 @@
   <div class="panel-head">
     <div>
       <p class="section-tag">功能路径</p>
-      <h2>系统使用流程</h2>
+      <h2>推荐分析流程</h2>
     </div>
   </div>
   <div class="flow-grid">
     <article class="flow-step">
       <div class="flow-index">01</div>
       <h3>单图识别</h3>
-      <p>先用系统内置样例直接演示分类结果与 Grad-CAM，快速说明系统核心能力。</p>
+      <p>先使用系统内置样例完成分类与 Grad-CAM 分析，快速确认模型推理链路。</p>
     </article>
     <article class="flow-step">
       <div class="flow-index">02</div>
       <h3>复杂场景</h3>
-      <p>继续展示实时抓拍、批量识别和特殊场景压力测试，回答系统鲁棒性问题。</p>
+      <p>继续使用实时抓拍、批量识别和特殊场景压力测试，观察模型在不同输入条件下的鲁棒性。</p>
     </article>
     <article class="flow-step">
       <div class="flow-index">03</div>
-      <h3>实验报告</h3>
-      <p>最后切到实验页，结合准确率、速度、训练摘要和模型对比表讲论文实验部分。</p>
+      <h3>评估报告</h3>
+      <p>最后进入评估报告，结合准确率、速度、训练摘要和模型对比表判断模型取舍。</p>
     </article>
   </div>
 </section>

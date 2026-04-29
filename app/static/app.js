@@ -171,9 +171,9 @@ function renderSummaryMetrics() {
       const summary = robustnessCache.items
         .map((item) => `${sceneDisplayName(item.scene)}最佳：${item.best_model}`)
         .join('；');
-      reportConclusionNote.textContent = `实验结论：${comparisonCache.best_accuracy_model || '-'} 在综合精度上表现最好，${comparisonCache.fastest_model || '-'} 在推理速度上最优。复杂场景结果为：${summary}。`;
+      reportConclusionNote.textContent = `评估结论：${comparisonCache.best_accuracy_model || '-'} 在综合精度上表现最好，${comparisonCache.fastest_model || '-'} 在推理速度上最优。复杂场景结果为：${summary}。`;
     } else {
-      reportConclusionNote.textContent = comparisonCache.note || '实验结论整理中。';
+      reportConclusionNote.textContent = comparisonCache.note || '评估结论整理中。';
     }
   }
 }
@@ -302,11 +302,11 @@ function renderComparison(data = {}) {
   if (data.dataset_size) summaryParts.push(`样本量：${formatDatasetSize(data.dataset_size)}`);
   if (data.best_accuracy_model) summaryParts.push(`准确率最优：${data.best_accuracy_model}`);
   if (data.fastest_model) summaryParts.push(`速度最优：${data.fastest_model}`);
-  comparisonSummary.textContent = summaryParts.join(' ｜ ') || '暂无离线实验总结。';
+  comparisonSummary.textContent = summaryParts.join(' ｜ ') || '暂无离线评估总结。';
 
   comparisonBody.innerHTML = '';
   if (!models.length) {
-    comparisonBody.innerHTML = '<tr><td colspan="7">尚未读取到实验结果。</td></tr>';
+    comparisonBody.innerHTML = '<tr><td colspan="7">尚未读取到评估结果。</td></tr>';
     return;
   }
 
@@ -441,7 +441,7 @@ async function loadReports() {
     renderTrainingSummary(training.data || []);
   } catch (err) {
     if (comparisonSummary) {
-      comparisonSummary.textContent = '实验报告读取失败，请先运行离线训练与评测脚本生成报告。';
+      comparisonSummary.textContent = '评估报告读取失败，请先运行离线训练与评测脚本生成报告。';
     }
     if (trainingSummaryNote) {
       trainingSummaryNote.textContent = '训练摘要读取失败。';
@@ -523,7 +523,7 @@ function initSinglePage() {
 
       const originalText = button.textContent;
       button.disabled = true;
-      button.textContent = '演示处理中…';
+      button.textContent = '识别处理中…';
 
       try {
         const data = await submitSample(sampleName, singleModelSelect.value, singleGradcamCheckbox.checked);
